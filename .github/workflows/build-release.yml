@@ -1,1 +1,48 @@
+name: Build Pre-Compiled Release
 
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v3
+        with:
+          version: 8
+
+      - name: Install Dependencies
+        run: pnpm install --no-frozen-lockfile
+
+      - name: Build Vencord
+        run: pnpm build
+
+      - name: Create Release Package
+        run: |
+          mkdir -p release_package/Vencord
+          mkdir -p release_package/Vesktop/sessionData
+          
+          cp -r dist release_package/Vencord/dist
+          cp -r dist release_package/Vesktop/sessionData/dist
+          
+          cd release_package
+          zip -r ../FakeDeafen-Prebuilt.zip .
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: FakeDeafen-Prebuilt.zip
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
