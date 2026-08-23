@@ -1,7 +1,11 @@
-import ErrorBoundary from "@components/ErrorBoundary";
 import definePlugin from "@utils/types";
-import { findByProps, findComponentByCodeLazy } from "@webpack";
-import Settings from "./settings";
+import { Devs } from "@utils/constants";
+
+export default definePlugin({
+    name: "FakeDeafen",
+    description: "Allows you to fake deafen in voice channels while still hearing and speaking.",
+    authors: [Devs.hyyven],
+    // Make sure all settings and patch definitions match updated Vencord plugin interfaces
 
 const Button = findComponentByCodeLazy(".GREEN,positionKeyStemOverride:");
 let enabled = false;
